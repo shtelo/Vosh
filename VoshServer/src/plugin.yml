@@ -1,0 +1,7 @@
+name: Vosh
+version: 1.1.26
+main: org.iptime.shtelo.vosh.server.Main
+
+commands:
+  vosh:
+    description: Vosh 서버 설정을 위한 명령어입니다.
