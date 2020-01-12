@@ -1,4 +1,4 @@
-package org.iptime.shtelo.vosh;
+package org.iptime.shtelo.vosh.server;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
