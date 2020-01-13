@@ -68,6 +68,14 @@ public class ServerSideThread implements Runnable {
                     break;
                 }
                 printStream.println(data);
+
+                String[] args = data.split(" ");
+
+                if (args.length >= 1) {
+                    if (args[0].equalsIgnoreCase("QUIT")) {
+                        break;
+                    }
+                }
             }
         }
 
