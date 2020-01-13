@@ -23,6 +23,15 @@ public class Server implements Runnable {
 
     private boolean running;
 
+    public void announce(String string) {
+        refreshQueue();
+        for (ServerSideThread serverSideThread : threads) {
+            serverSideThread.sendWithoutLog(string);
+        }
+        Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
+                "&lCLIENTS&r" + " < " + string));
+    }
+
     public Server(Main plugin) {
         this.plugin = plugin;
 
@@ -38,15 +47,15 @@ public class Server implements Runnable {
         serverSocket = new ServerSocket(Constants.PORT);
 
         thread.start();
-
-        running = true;
-
-        Bukkit.getConsoleSender().sendMessage(
-                Utils.chat(Constants.CHATTING_PREFIX + " 서버가 포트 " + Constants.PORT + "에서 시작되었습니다."));
     }
 
     @Override
     public void run() {
+        running = true;
+
+        Bukkit.getConsoleSender().sendMessage(
+                Utils.chat(Constants.CHATTING_PREFIX + " 서버가 포트 " + Constants.PORT + "에서 시작되었습니다."));
+
         while (plugin.isEnabled() && running) {
             Socket socket;
             try {
@@ -102,5 +111,19 @@ public class Server implements Runnable {
 
     public boolean isRunning() {
         return running;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public boolean isName(String name) {
+        refreshQueue();
+        for (ServerSideThread serverSideThread : threads) {
+            if (serverSideThread.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

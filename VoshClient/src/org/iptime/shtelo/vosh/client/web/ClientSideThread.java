@@ -25,12 +25,27 @@ public class ClientSideThread implements Runnable {
         }
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Override
     public void run() {
         String data;
-        while (true) {
+        while (client.isConnected()) {
             try {
                 data = client.receive();
+
+                String[] args = data.split(" ");
+
+                if (args.length >= 1) {
+                    if (args[0].equalsIgnoreCase("PING")) {
+                        client.send("PONG");
+//                    } else if (args[0].equalsIgnoreCase("QUIT")) {
+//
+//                    } else if (args[0].equalsIgnoreCase("NAME")) {
+//
+                    } else if (args[0].equalsIgnoreCase("QNME")) {
+                        client.setName(args[1]);
+                    }
+                }
             } catch (NoSuchElementException e) {
                 break;
             }

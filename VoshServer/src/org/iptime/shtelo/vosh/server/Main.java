@@ -8,9 +8,11 @@ import org.iptime.shtelo.vosh.server.web.Server;
 import java.io.IOException;
 
 public class Main extends JavaPlugin {
+    private Server server;
+
     @Override
     public void onEnable() {
-        Server server = new Server(this);
+        server = new Server(this);
 
         new VoshCommand(server, this);
 
@@ -21,5 +23,10 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDisable() {
+        server.stop();
     }
 }

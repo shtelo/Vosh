@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ServerSideThread implements Runnable {
@@ -21,34 +22,54 @@ public class ServerSideThread implements Runnable {
 
     private Thread thread;
 
+    private boolean connected;
+
+    private String name;
+
     public ServerSideThread(Socket socket, Server server, Main plugin) {
         this.socket = socket;
         this.server = server;
         this.plugin = plugin;
+
+        name = generateName();
     }
 
-    public void start() throws IOException {
+    private String generateName() {
+        String result = "";
+        Random random = new Random();
+        do {
+            for (int i = 0; i < 17; i++) {
+                result = result + (char)((int)'a' + random.nextInt(26));
+            }
+        } while (server.isName(result));
+        return result;
+    }
+
+    private String getAddress() {
+        return socket.getInetAddress().getHostName() + ":" + socket.getPort();
+    }
+
+    public void start() {
         thread = new Thread(this);
-
         server.getThreads().add(this);
-
-        printStream = new PrintStream(socket.getOutputStream());
-        scanner = new Scanner(socket.getInputStream());
 
         thread.start();
 
         Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
-                socket.getInetAddress().getHostName() + "이(가) 보스 클라이언트를 시작했습니다."));
+                getAddress() + "이(가) 보스 클라이언트를 시작했습니다."));
     }
 
     public void stop() {
+        if (!connected) return;
+        connected = false;
+
         server.queueRemove(this);
 
         scanner.close();
         printStream.close();
 
         Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
-                socket.getInetAddress().getHostName() + "이(가) 보스 클라이언트를 종료했습니다."));
+                getAddress() + "이(가) 보스 클라이언트를 종료했습니다."));
 
         try {
             thread.join();
@@ -57,23 +78,71 @@ public class ServerSideThread implements Runnable {
         }
     }
 
+    private String receive() {
+        String data = scanner.nextLine();
+        Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
+                getAddress() + " > " + data));
+        return data;
+    }
+
+    public void send(String string) {
+        sendWithoutLog(string);
+        Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
+                getAddress() + " < " + string));
+    }
+
+    public void sendWithoutLog(String string) {
+        printStream.println(string);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @SuppressWarnings("SpellCheckingInspection")
     @Override
     public void run() {
+        if (connected) return;
+        connected = true;
+        try {
+            printStream = new PrintStream(socket.getOutputStream());
+            scanner = new Scanner(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        server.announce("JOIN " + name);
+
         String data;
-        while (plugin.isEnabled()) {
-            if (scanner.hasNextLine()) {
+        boolean hasNextLine;
+        while (plugin.isEnabled() && connected) {
+            try {
+                hasNextLine = scanner.hasNextLine();
+            } catch (IllegalStateException e) {
+                break;
+            }
+            if (hasNextLine) {
                 try {
-                    data = scanner.nextLine();
+                    data = receive();
                 } catch (NoSuchElementException e) {
                     break;
                 }
-                printStream.println(data);
 
                 String[] args = data.split(" ");
 
                 if (args.length >= 1) {
                     if (args[0].equalsIgnoreCase("QUIT")) {
+                        server.announce("QUIT " + name);
                         break;
+                    } else if (args[0].equalsIgnoreCase("PING")) {
+                        send("PONG");
+                    } else if (args[0].equalsIgnoreCase("CHAT")) {
+                        server.announce("CHAT " + name + " " + data.substring(5));
+                    } else if (args[0].equalsIgnoreCase("NAME")) {
+                        server.announce("NAME " + name + " " + args[1]);
+                        name = args[1];
+                    } else if (args[0].equalsIgnoreCase("QNME")) {
+                        send("QNME " + name);
                     }
                 }
             }

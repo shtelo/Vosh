@@ -8,9 +8,12 @@ import org.iptime.shtelo.vosh.client.web.Client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginForm extends JFrame {
     private JTextField ipTextField;
@@ -43,13 +46,22 @@ public class LoginForm extends JFrame {
             }
         }
 
+        String name = nicknameTextField.getText();
+        Pattern pattern = Pattern.compile("[0-9A-Za-z_]{3,16}");
+        Matcher matcher = pattern.matcher(name);
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(this, "닉네임이 올바르지 않습니다!\n" +
+                    "마인크래프트 계정의 닉네임을 입력해주세요!");
+            return;
+        }
+
         Socket socket;
         ChatForm chatForm;
         Client client;
         try {
             socket = new Socket(host, port);
             chatForm = new ChatForm();
-            client = new Client(socket, chatForm);
+            client = new Client(name, socket, chatForm);
             chatForm.setClient(client);
         } catch (ConnectException e) {
             JOptionPane.showMessageDialog(this, "서버가 열려있지 않습니다!\n" + e.getMessage());
@@ -59,18 +71,17 @@ public class LoginForm extends JFrame {
             return;
         }
 
-        client.send("PING");
-
         setVisible(false);
         dispose();
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         chatForm.start();
     }
 
     public void start() {
         frame.setTitle(Constants.PROJECT_NAME);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 500);
-        frame.setMinimumSize(new Dimension(300, 500));
+        frame.setSize(Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);
+        frame.setMinimumSize(new Dimension(500, 500));
         frame.setLocationRelativeTo(null);
 
         frame.add(panel);
