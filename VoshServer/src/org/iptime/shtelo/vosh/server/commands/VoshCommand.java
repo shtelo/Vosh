@@ -7,6 +7,7 @@ import org.iptime.shtelo.vosh.server.Main;
 import org.iptime.shtelo.vosh.server.utils.Constants;
 import org.iptime.shtelo.vosh.server.utils.Utils;
 import org.iptime.shtelo.vosh.server.web.Server;
+import org.iptime.shtelo.vosh.server.web.ServerSideThread;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class VoshCommand implements CommandExecutor {
         argsDescription.put("start", "보스 서버를 시작합니다.");
         argsDescription.put("status", "보스 서버의 상태를 확인합니다.");
         argsDescription.put("help", "/vosh 명령어 사용법을 확인합니다.");
+        argsDescription.put("list", "보스 서버에 접속중인 클라이언트 목록을 확인합니다.");
     }
 
     @Override
@@ -85,6 +87,13 @@ public class VoshCommand implements CommandExecutor {
                 for (String key : argsDescription.keySet()) {
                     sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX +
                             " /vosh " + key + " - " + argsDescription.get(key)));
+                }
+            } else if (args[0].equalsIgnoreCase("list")) {
+                sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " &e보스 서버 클라이언트 목록"));
+                sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " "
+                        + server.getThreads().size() + "명 접속중"));
+                for (ServerSideThread thread : server.getThreads()) {
+                    sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " + thread.getName()));
                 }
             }
         }
