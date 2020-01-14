@@ -35,6 +35,11 @@ public class Client {
         clientSideThread.start();
     }
 
+    public void quit() {
+        send("QUIT");
+        setConnected(false);
+    }
+
     public void send(String string) {
         printStream.println(string);
         chatForm.addLog("SERVER", "<-", string);

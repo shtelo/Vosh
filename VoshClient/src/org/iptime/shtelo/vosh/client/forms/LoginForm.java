@@ -8,6 +8,7 @@ import org.iptime.shtelo.vosh.client.web.Client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -21,16 +22,28 @@ public class LoginForm extends JFrame {
     private JTextField nicknameTextField;
     private JButton connectButton;
 
-    private JFrame frame;
+    private boolean connecting;
 
     public LoginForm() {
-        frame = new JFrame();
+        connecting = false;
+
         connectButton.addActionListener(e -> connect());
         ipTextField.addActionListener(e -> connect());
         nicknameTextField.addActionListener(e -> connect());
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (connecting)
+                    dispose();
+                else
+                    System.exit(0);
+            }
+        });
     }
 
     private void connect() {
+        connecting = true;
+
         String host;
         int port = Constants.DEFAULT_PORT;
         if (ipTextField.getText().indexOf(':') == -1) {
@@ -78,15 +91,15 @@ public class LoginForm extends JFrame {
     }
 
     public void start() {
-        frame.setTitle(Constants.PROJECT_NAME);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);
-        frame.setMinimumSize(new Dimension(500, 500));
-        frame.setLocationRelativeTo(null);
+        setTitle(Constants.PROJECT_NAME);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setSize(Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);
+        setMinimumSize(new Dimension(500, 500));
+        setLocationRelativeTo(null);
 
-        frame.add(panel);
+        add(panel);
 
-        frame.setVisible(true);
+        setVisible(true);
     }
 
     {
