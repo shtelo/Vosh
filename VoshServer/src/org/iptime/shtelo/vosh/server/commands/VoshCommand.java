@@ -63,7 +63,8 @@ public class VoshCommand implements CommandExecutor {
                             return false;
                         } catch (IOException e) {
                             e.printStackTrace();
-                            sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " 서버를 여는 중 오류가 발생했습니다!"));
+                            sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
+                                    "서버를 여는 중 오류가 발생했습니다!"));
                             return true;
                         }
                     }
@@ -89,6 +90,8 @@ public class VoshCommand implements CommandExecutor {
                             " /vosh " + key + " - " + argsDescription.get(key)));
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
+                server.refreshQueue();
+
                 sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " &e보스 서버 클라이언트 목록"));
                 sender.sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " "
                         + server.getThreads().size() + "명 접속중"));

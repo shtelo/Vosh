@@ -94,7 +94,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void refreshQueue() {
+    public void refreshQueue() {
         for (ServerSideThread serverSideThread : threadsRemoveQueue) {
             threads.remove(serverSideThread);
         }
