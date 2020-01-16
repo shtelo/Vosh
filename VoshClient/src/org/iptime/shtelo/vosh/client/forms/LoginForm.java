@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.iptime.shtelo.vosh.client.utils.Constants;
 import org.iptime.shtelo.vosh.client.web.Client;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -74,13 +75,16 @@ public class LoginForm extends JFrame {
         try {
             socket = new Socket(host, port);
             chatForm = new ChatForm();
-            client = new Client(name, socket, chatForm);
+            client = new Client(name, socket, host, port, chatForm);
             chatForm.setClient(client);
         } catch (ConnectException e) {
             JOptionPane.showMessageDialog(this, "서버가 열려있지 않습니다!\n" + e.getMessage());
             return;
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "알 수 없는 이유로 서버에 접속할 수 없습니다!\n" + e.getMessage());
+            return;
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
             return;
         }
 

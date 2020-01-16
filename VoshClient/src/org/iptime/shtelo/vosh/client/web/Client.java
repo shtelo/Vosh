@@ -2,37 +2,55 @@ package org.iptime.shtelo.vosh.client.web;
 
 import org.iptime.shtelo.vosh.client.forms.ChatForm;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
+    private final String HOST;
+    private final int PORT;
     private Socket socket;
     private ChatForm chatForm;
 
     private PrintStream printStream;
     private Scanner scanner;
-    private ClientSideThread clientSideThread;
+
+    private ClientReceiveThread clientReceiveThread;
+    private ClientVoiceThread clientVoiceThread;
 
     private boolean connected;
 
     private String name;
 
-    public Client(String name, Socket socket, ChatForm chatForm) throws IOException {
+    public Client(String name, Socket socket, String host, int port, ChatForm chatForm)
+            throws IOException, LineUnavailableException {
         this.name = name;
         this.socket = socket;
+        this.HOST = host;
+        this.PORT = port;
         this.chatForm = chatForm;
 
         connected = true;
 
-        this.printStream = new PrintStream(socket.getOutputStream());
-        this.scanner = new Scanner(socket.getInputStream());
+        printStream = new PrintStream(socket.getOutputStream());
+        scanner = new Scanner(socket.getInputStream());
 
         send("NAME " + name);
 
-        clientSideThread = new ClientSideThread(this);
-        clientSideThread.start();
+        clientReceiveThread = new ClientReceiveThread(this);
+        clientReceiveThread.start();
+        clientVoiceThread = new ClientVoiceThread(this);
+        clientVoiceThread.start();
+    }
+
+    public int getPORT() {
+        return PORT;
+    }
+
+    public String getHOST() {
+        return HOST;
     }
 
     public void quit() {
@@ -43,6 +61,10 @@ public class Client {
     public void send(String string) {
         printStream.println(string);
         chatForm.addLog("SERVER", "<-", string);
+    }
+
+    public void sendByte(byte[] data) throws IOException {
+        socket.getOutputStream().write(data);
     }
 
     public String receive() {

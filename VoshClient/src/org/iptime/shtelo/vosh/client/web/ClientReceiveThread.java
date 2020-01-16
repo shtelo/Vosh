@@ -2,12 +2,12 @@ package org.iptime.shtelo.vosh.client.web;
 
 import java.util.NoSuchElementException;
 
-public class ClientSideThread implements Runnable {
+public class ClientReceiveThread implements Runnable {
     private Client client;
 
     private Thread thread;
 
-    public ClientSideThread(Client client) {
+    public ClientReceiveThread(Client client) {
         this.client = client;
 
         thread = new Thread(this);
