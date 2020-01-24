@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.github.adedayo.intellij.sdk:javac2:142.1" type="repository">
+    <properties maven-id="com.github.adedayo.intellij.sdk:javac2:142.1" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/adedayo/intellij/sdk/javac2/142.1/javac2-142.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

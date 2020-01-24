@@ -10,4 +10,6 @@ public class Constants {
 
     public static final int SAMPLE_RATE = 44100;
     public static final int BUFFER_SIZE = 32768;
+
+    public static final String VOICE_PREFIX = "~$V~";
 }
