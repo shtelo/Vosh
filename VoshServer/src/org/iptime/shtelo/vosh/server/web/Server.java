@@ -32,6 +32,27 @@ public class Server implements Runnable {
                 "&lCLIENTS&r" + " < " + string));
     }
 
+    public void passStringToOthers(String string, ServerSideThread from) {
+        refreshQueue();
+        for (ServerSideThread serverSideThread : threads) {
+            if (serverSideThread != from) {
+                serverSideThread.sendWithoutLog(string);
+            }
+        }
+    }
+
+    public void passBytesToOthers(byte[] bytes, ServerSideThread from) {
+        refreshQueue();
+        for (ServerSideThread serverSideThread : threads) {
+            if (serverSideThread != from) {
+                try {
+                    serverSideThread.sendBytes(bytes);
+                } catch (IOException ignored) {
+                }
+            }
+        }
+    }
+
     public Server(Main plugin) {
         this.plugin = plugin;
 

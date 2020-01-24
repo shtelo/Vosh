@@ -1,6 +1,7 @@
 package org.iptime.shtelo.vosh.client.web;
 
 import org.iptime.shtelo.vosh.client.forms.ChatForm;
+import org.iptime.shtelo.vosh.client.utils.Constants;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
@@ -18,7 +19,8 @@ public class Client {
     private Scanner scanner;
 
     private ClientReceiveThread clientReceiveThread;
-    private ClientVoiceThread clientVoiceThread;
+    private ClientVoiceReceiveThread clientVoiceReceiveThread;
+    private ClientVoiceSendThread clientVoiceSendThread;
 
     private boolean connected;
 
@@ -41,8 +43,10 @@ public class Client {
 
         clientReceiveThread = new ClientReceiveThread(this);
         clientReceiveThread.start();
-        clientVoiceThread = new ClientVoiceThread(this);
-        clientVoiceThread.start();
+        clientVoiceReceiveThread = new ClientVoiceReceiveThread(this);
+        clientVoiceReceiveThread.start();
+        clientVoiceSendThread = new ClientVoiceSendThread(this);
+        clientVoiceSendThread.start();
     }
 
     public int getPORT() {
@@ -63,15 +67,25 @@ public class Client {
         chatForm.addLog("SERVER", "<-", string);
     }
 
-    public void sendByte(byte[] data) throws IOException {
-        socket.getOutputStream().write(data);
+    public void sendBytes(byte[] bytes) throws IOException {
+        socket.getOutputStream().write(bytes);
     }
 
     public String receive() {
         if (scanner.hasNextLine()) {
             String data = scanner.nextLine();
-            chatForm.addLog("SERVER", "->", data);
+            if (!data.split(" ")[0].equals(Constants.VOICE_PREFIX)) {
+                chatForm.addLog("SERVER", "->", data);
+            }
             return data;
+        }
+        return null;
+    }
+
+    public byte[] receiveBytes(int len) {
+        try {
+            return socket.getInputStream().readNBytes(len);
+        } catch (IOException ignored) {
         }
         return null;
     }
@@ -91,5 +105,9 @@ public class Client {
     public void setName(String name) {
         chatForm.getUsernameLabel().setText(name);
         this.name = name;
+    }
+
+    public ClientVoiceReceiveThread getClientVoiceReceiveThread() {
+        return clientVoiceReceiveThread;
     }
 }
