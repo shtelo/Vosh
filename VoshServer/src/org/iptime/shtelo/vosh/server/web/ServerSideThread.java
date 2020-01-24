@@ -39,7 +39,7 @@ public class ServerSideThread implements Runnable {
         Random random = new Random();
         do {
             for (int i = 0; i < 17; i++) {
-                result = result + (char) ((int) 'a' + random.nextInt(26));
+                result = result + (char)((int)'a' + random.nextInt(26));
             }
         } while (server.isName(result));
         return result;
@@ -80,29 +80,15 @@ public class ServerSideThread implements Runnable {
 
     private String receive() {
         String data = scanner.nextLine();
-        if (!data.trim().equals(Constants.VOICE_PREFIX)) {
-            Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
-                    getAddress() + " > " + data));
-        }
+        Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
+                getAddress() + " > " + data));
         return data;
-    }
-
-    private byte[] receiveBytes(int len) {
-        try {
-            return socket.getInputStream().readNBytes(len);
-        } catch (IOException ignored) {
-        }
-        return null;
     }
 
     public void send(String string) {
         sendWithoutLog(string);
         Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
                 getAddress() + " < " + string));
-    }
-
-    public void sendBytes(byte[] data) throws IOException {
-        socket.getOutputStream().write(data);
     }
 
     public void sendWithoutLog(String string) {
@@ -143,14 +129,6 @@ public class ServerSideThread implements Runnable {
                 }
 
                 String[] args = data.split(" ");
-
-                if (args[0].equals(Constants.VOICE_PREFIX)) {
-                    String position = Constants.VOICE_PREFIX + " 0 0 0";
-                    byte[] voice = receiveBytes(Constants.BUFFER_SIZE);
-                    server.passStringToOthers(position, this);
-                    server.passBytesToOthers(voice, this);
-                    continue;
-                }
 
                 if (args.length >= 1) {
                     if (args[0].equalsIgnoreCase("QUIT")) {

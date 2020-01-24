@@ -1,7 +1,5 @@
 package org.iptime.shtelo.vosh.client.web;
 
-import org.iptime.shtelo.vosh.client.utils.Constants;
-
 import java.util.NoSuchElementException;
 
 public class ClientReceiveThread implements Runnable {
@@ -37,12 +35,6 @@ public class ClientReceiveThread implements Runnable {
 
                 String[] args = data.split(" ");
 
-                if (args[0].equals(Constants.VOICE_PREFIX)) {
-                    byte[] voice = client.receiveBytes(Constants.BUFFER_SIZE);
-                    client.getClientVoiceReceiveThread().offer(data, voice);
-                    continue;
-                }
-
                 if (args.length >= 1) {
                     if (args[0].equalsIgnoreCase("PING")) {
                         client.send("PONG");
@@ -56,7 +48,6 @@ public class ClientReceiveThread implements Runnable {
                 }
             } catch (NoSuchElementException e) {
                 break;
-            } catch (NullPointerException ignored) {
             }
         }
 

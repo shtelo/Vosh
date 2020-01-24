@@ -5,7 +5,7 @@ import org.iptime.shtelo.vosh.client.utils.Constants;
 import javax.sound.sampled.*;
 import java.io.IOException;
 
-public class ClientVoiceSendThread implements Runnable {
+public class ClientVoiceThread implements Runnable {
     private Client client;
 
     private AudioFormat audioFormat;
@@ -15,17 +15,15 @@ public class ClientVoiceSendThread implements Runnable {
 
     private Thread thread;
 
-    public ClientVoiceSendThread(Client client) {
+    public ClientVoiceThread(Client client) {
         this.client = client;
     }
 
     public void start() throws LineUnavailableException {
-        audioFormat = new AudioFormat(
-                Constants.SAMPLE_RATE, 16, 1, true, true);
+        audioFormat = new AudioFormat(Constants.SAMPLE_RATE, 16, 1, true, true);
         info = new DataLine.Info(TargetDataLine.class, audioFormat);
         targetDataLine = (TargetDataLine) AudioSystem.getLine(info);
-        targetDataLine.open();
-        targetDataLine.start();
+        targetDataLine.open(); targetDataLine.start();
         audioInputStream = new AudioInputStream(targetDataLine);
 
         thread = new Thread(this);
@@ -54,12 +52,8 @@ public class ClientVoiceSendThread implements Runnable {
         while (client.isConnected()) {
             try {
                 data = audioInputStream.readNBytes(Constants.BUFFER_SIZE);
-
-                // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
-
-                client.send(Constants.VOICE_PREFIX);
-                client.sendBytes(data);
-            } catch (IOException ignored) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         stop();
