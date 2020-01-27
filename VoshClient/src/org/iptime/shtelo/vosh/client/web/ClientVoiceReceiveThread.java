@@ -67,8 +67,7 @@ public class ClientVoiceReceiveThread implements Runnable {
 
                 assert voice != null;
                 line.write(voice, 0, voice.length);
-            } catch (NullPointerException ignored) {
-            }
+            } catch (NullPointerException ignored) {}
         }
         stop();
     }
