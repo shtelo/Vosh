@@ -26,5 +26,7 @@ public class MoveListener implements Listener {
         double z = player.getLocation().getZ();
         double xRot = player.getLocation().getPitch();
         double yRot = player.getLocation().getYaw();
+
+        // todo send data to all connected clients.
     }
 }
