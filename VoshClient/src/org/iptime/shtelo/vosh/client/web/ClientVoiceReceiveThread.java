@@ -2,7 +2,10 @@ package org.iptime.shtelo.vosh.client.web;
 
 import org.iptime.shtelo.vosh.client.utils.Constants;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import java.util.LinkedList;
 
 public class ClientVoiceReceiveThread implements Runnable {
@@ -23,8 +26,8 @@ public class ClientVoiceReceiveThread implements Runnable {
     }
 
     public void offer(String position, byte[] voice) {
-        voiceQueue.offer(voice);
         positionQueue.offer(position);
+        voiceQueue.offer(voice);
     }
 
     public void start() throws LineUnavailableException {
