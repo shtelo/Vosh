@@ -8,11 +8,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.iptime.shtelo.vosh.server.Main;
 
 public class MoveListener implements Listener {
-    private Main plugin;
-
     public MoveListener(Main plugin) {
-        this.plugin = plugin;
-
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -26,5 +22,7 @@ public class MoveListener implements Listener {
         double z = player.getLocation().getZ();
         double xRot = player.getLocation().getPitch();
         double yRot = player.getLocation().getYaw();
+
+        // todo send data to all connected clients.
     }
 }

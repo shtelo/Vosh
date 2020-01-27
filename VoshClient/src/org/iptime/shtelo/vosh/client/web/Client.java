@@ -49,14 +49,6 @@ public class Client {
         clientVoiceSendThread.start();
     }
 
-    public int getPORT() {
-        return PORT;
-    }
-
-    public String getHOST() {
-        return HOST;
-    }
-
     public void quit() {
         send("QUIT");
         setConnected(false);

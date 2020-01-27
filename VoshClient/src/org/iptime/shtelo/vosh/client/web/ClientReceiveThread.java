@@ -37,13 +37,13 @@ public class ClientReceiveThread implements Runnable {
 
                 String[] args = data.split(" ");
 
-                if (args[0].equals(Constants.VOICE_PREFIX)) {
-                    byte[] voice = client.receiveBytes(Constants.BUFFER_SIZE);
-                    client.getClientVoiceReceiveThread().offer(data, voice);
-                    continue;
-                }
-
                 if (args.length >= 1) {
+                    if (args[0].equals(Constants.VOICE_PREFIX)) {
+                        byte[] voice = client.receiveBytes(Constants.BUFFER_SIZE);
+                        client.getClientVoiceReceiveThread().offer(data, voice);
+                        continue;
+                    }
+
                     if (args[0].equalsIgnoreCase("PING")) {
                         client.send("PONG");
 //                    } else if (args[0].equalsIgnoreCase("QUIT")) {
