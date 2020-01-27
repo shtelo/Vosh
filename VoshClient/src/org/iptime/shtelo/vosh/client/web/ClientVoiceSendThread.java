@@ -8,8 +8,6 @@ import java.io.IOException;
 public class ClientVoiceSendThread implements Runnable {
     private Client client;
 
-    private AudioFormat audioFormat;
-    private DataLine.Info info;
     private TargetDataLine targetDataLine;
     private AudioInputStream audioInputStream;
 
@@ -20,10 +18,9 @@ public class ClientVoiceSendThread implements Runnable {
     }
 
     public void start() throws LineUnavailableException {
-        audioFormat = new AudioFormat(
-                Constants.SAMPLE_RATE, 16, 1, true, true);
-        info = new DataLine.Info(TargetDataLine.class, audioFormat);
-        targetDataLine = (TargetDataLine) AudioSystem.getLine(info);
+        targetDataLine = (TargetDataLine) AudioSystem.getLine(new DataLine.Info(
+                TargetDataLine.class,
+                new AudioFormat(Constants.SAMPLE_RATE, 16, 1, true, true)));
         targetDataLine.open();
         targetDataLine.start();
         audioInputStream = new AudioInputStream(targetDataLine);

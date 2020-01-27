@@ -8,11 +8,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.iptime.shtelo.vosh.server.Main;
 
 public class MoveListener implements Listener {
-    private Main plugin;
-
     public MoveListener(Main plugin) {
-        this.plugin = plugin;
-
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 

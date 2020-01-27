@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.iptime.shtelo.vosh.server.Main;
 import org.iptime.shtelo.vosh.server.utils.Constants;
 import org.iptime.shtelo.vosh.server.utils.Utils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -45,6 +47,7 @@ public class ServerSideThread implements Runnable {
         return result;
     }
 
+    @NotNull
     private String getAddress() {
         return socket.getInetAddress().getHostName() + ":" + socket.getPort();
     }
@@ -78,6 +81,7 @@ public class ServerSideThread implements Runnable {
         }
     }
 
+    @NotNull
     private String receive() {
         String data = scanner.nextLine();
         if (!data.trim().equals(Constants.VOICE_PREFIX)) {
@@ -87,11 +91,11 @@ public class ServerSideThread implements Runnable {
         return data;
     }
 
-    private byte[] receiveBytes(int len) {
+    @Nullable
+    private byte[] receiveBytes() {
         try {
-            return socket.getInputStream().readNBytes(len);
-        } catch (IOException ignored) {
-        }
+            return socket.getInputStream().readNBytes(Constants.BUFFER_SIZE);
+        } catch (IOException ignored) {}
         return null;
     }
 
@@ -144,15 +148,15 @@ public class ServerSideThread implements Runnable {
 
                 String[] args = data.split(" ");
 
-                if (args[0].equals(Constants.VOICE_PREFIX)) {
-                    String position = Constants.VOICE_PREFIX + " 0 0 0";
-                    byte[] voice = receiveBytes(Constants.BUFFER_SIZE);
-                    server.passStringToOthers(position, this);
-                    server.passBytesToOthers(voice, this);
-                    continue;
-                }
-
                 if (args.length >= 1) {
+                    if (args[0].equals(Constants.VOICE_PREFIX)) {
+                        String position = Constants.VOICE_PREFIX + " 0 0 0";
+                        byte[] voice = receiveBytes();
+                        server.passStringToOthers(position, this);
+                        server.passBytesToOthers(voice, this);
+                        continue;
+                    }
+
                     if (args[0].equalsIgnoreCase("QUIT")) {
                         server.announce("QUIT " + name);
                         break;
