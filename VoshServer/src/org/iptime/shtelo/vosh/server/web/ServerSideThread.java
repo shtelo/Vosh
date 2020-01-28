@@ -84,7 +84,7 @@ public class ServerSideThread implements Runnable {
     @NotNull
     private String receive() {
         String data = scanner.nextLine();
-        if (!data.trim().equals(Constants.VOICE_PREFIX)) {
+        if (!data.split(" ")[0].trim().equals(Constants.VOICE_PREFIX)) {
             Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
                     getAddress() + " > " + data));
         }
@@ -149,10 +149,9 @@ public class ServerSideThread implements Runnable {
                 String[] args = data.split(" ");
 
                 if (args.length >= 1) {
-                    if (args[0].equals(Constants.VOICE_PREFIX)) {
-                        String position = Constants.VOICE_PREFIX + " 0 0 0";
+                    if (args[0].trim().equals(Constants.VOICE_PREFIX)) {
                         byte[] voice = receiveBytes();
-                        server.passStringToOthers(position, this);
+                        server.passStringToOthers(data, this);
                         server.passBytesToOthers(voice, this);
                         continue;
                     }

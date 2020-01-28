@@ -56,7 +56,9 @@ public class Client {
 
     public void send(String string) {
         printStream.println(string);
-        chatForm.addLog("SERVER", "<-", string);
+        if (!string.split(" ")[0].trim().equals(Constants.VOICE_PREFIX)) {
+            chatForm.addLog("SERVER", "<-", string);
+        }
     }
 
     public void sendBytes(byte[] bytes) throws IOException {
@@ -66,7 +68,7 @@ public class Client {
     public String receive() {
         if (scanner.hasNextLine()) {
             String data = scanner.nextLine();
-            if (!data.split(" ")[0].equals(Constants.VOICE_PREFIX)) {
+            if (!data.split(" ")[0].trim().equals(Constants.VOICE_PREFIX)) {
                 chatForm.addLog("SERVER", "->", data);
             }
             return data;
