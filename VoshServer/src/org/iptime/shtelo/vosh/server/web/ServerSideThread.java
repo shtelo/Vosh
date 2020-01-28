@@ -120,7 +120,6 @@ public class ServerSideThread implements Runnable {
         return name;
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
     @Override
     public void run() {
         if (connected) return;

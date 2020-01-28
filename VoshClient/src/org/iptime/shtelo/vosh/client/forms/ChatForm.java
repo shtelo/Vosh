@@ -6,7 +6,10 @@ import org.iptime.shtelo.vosh.client.utils.Constants;
 import org.iptime.shtelo.vosh.client.web.Client;
 
 import javax.swing.*;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -16,6 +19,8 @@ public class ChatForm extends JFrame {
     private JTextField textField;
     private JButton sendButton;
     private JLabel usernameLabel;
+    private JButton yawButton;
+    private JButton posButton;
     private Client client;
 
     public ChatForm() {
@@ -29,6 +34,8 @@ public class ChatForm extends JFrame {
                 System.exit(0);
             }
         });
+        posButton.addActionListener(actionEvent -> client.send("GPOS " + client.getName()));
+        yawButton.addActionListener(actionEvent -> client.send("GYAW " + client.getName()));
     }
 
     public JLabel getUsernameLabel() {
