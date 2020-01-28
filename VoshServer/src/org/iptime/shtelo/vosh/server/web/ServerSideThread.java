@@ -104,7 +104,7 @@ public class ServerSideThread implements Runnable {
         sendWithoutLog(string);
         Bukkit.getConsoleSender().sendMessage(Utils.chat(Constants.CHATTING_PREFIX + " " +
                 getAddress() + " < " + string));
-    }
+}
 
     public void sendBytes(byte[] data) throws IOException {
         socket.getOutputStream().write(data);

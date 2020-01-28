@@ -8,7 +8,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import java.util.Base64;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class ClientVoiceReceiveThread implements Runnable {
     private ChatForm chatForm;
@@ -18,13 +18,13 @@ public class ClientVoiceReceiveThread implements Runnable {
 
     private Thread thread;
 
-    private LinkedList<String> voiceQueue;
+    private LinkedBlockingDeque<String> voiceQueue;
 
     public ClientVoiceReceiveThread(ChatForm chatForm, Client client) {
         this.chatForm = chatForm;
         this.client = client;
 
-        voiceQueue = new LinkedList<>();
+        voiceQueue = new LinkedBlockingDeque<>();
     }
 
     public void offer(String data) {
