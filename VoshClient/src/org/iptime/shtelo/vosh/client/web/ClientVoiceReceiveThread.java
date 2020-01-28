@@ -36,6 +36,7 @@ public class ClientVoiceReceiveThread implements Runnable {
                 Constants.SAMPLE_RATE, 16, 1, true, true);
         line = AudioSystem.getSourceDataLine(audioFormat);
         line.open(audioFormat, Constants.SAMPLE_RATE);
+        line.start();
 
         thread = new Thread(this);
         thread.setDaemon(true);
