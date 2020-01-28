@@ -56,7 +56,7 @@ public class ClientVoiceSendThread implements Runnable {
                 data = audioInputStream.readNBytes(Constants.BUFFER_SIZE);
 
                 // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
-                rawData = Constants.VOICE_PREFIX + " 0.0 0.0 0.0 " + encoder.encodeToString(data);
+                rawData = Constants.VOICE_PREFIX + " zer0ken " + encoder.encodeToString(data);
                 client.send(rawData);
 
             } catch (IOException ignored) {

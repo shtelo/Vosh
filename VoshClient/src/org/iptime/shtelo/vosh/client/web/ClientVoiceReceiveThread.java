@@ -62,11 +62,8 @@ public class ClientVoiceReceiveThread implements Runnable {
 
         while (client.isConnected()) {
             try {
-                rawData = voiceQueue.poll().trim().split(" ", 5);
-                for (int i = 0; i < 3; i++) {
-                    position[i] = Float.parseFloat(rawData[i + 1]);
-                }
-                voice = decoder.decode(rawData[4]);
+                rawData = voiceQueue.poll().trim().split(" ", 3);
+                voice = decoder.decode(rawData[2]);
 
                 // TODO: here comes the codes to control the volume of the voice
 
