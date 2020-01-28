@@ -61,7 +61,7 @@ public class ClientVoiceReceiveThread implements Runnable {
 
         while (client.isConnected()) {
             try {
-                rawData = voiceQueue.poll().trim().split(" ", 4);
+                rawData = voiceQueue.poll().trim().split(" ", 5);
                 for (int i = 0; i < 3; i++) {
                     position[i] = Float.parseFloat(rawData[i + 1]);
                 }
