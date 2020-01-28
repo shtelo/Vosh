@@ -4,6 +4,7 @@ import org.iptime.shtelo.vosh.client.utils.Constants;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class ClientVoiceSendThread implements Runnable {
     private Client client;
@@ -54,7 +55,7 @@ public class ClientVoiceSendThread implements Runnable {
 
                 // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
 
-                client.send(Constants.VOICE_PREFIX + " 0 0 0 " + new String(data));
+                client.send(Constants.VOICE_PREFIX + " 0 0 0 " + new String(data, StandardCharsets.UTF_8));
             } catch (IOException ignored) {
             }
         }
