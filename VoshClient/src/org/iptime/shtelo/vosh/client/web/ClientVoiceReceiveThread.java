@@ -68,8 +68,6 @@ public class ClientVoiceReceiveThread implements Runnable {
                 }
                 voice = decoder.decode(rawData[4]);
 
-                chatForm.addLog("SERVER", "->", String.format("[ %d Bytes ]", voice.length));
-
                 // TODO: here comes the codes to control the volume of the voice
 
                 line.write(voice, 0, voice.length);
