@@ -1,16 +1,17 @@
 package org.iptime.shtelo.vosh.client.web;
 
+import org.iptime.shtelo.vosh.client.forms.ChatForm;
 import org.iptime.shtelo.vosh.client.utils.Constants;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.LinkedList;
 
 public class ClientVoiceReceiveThread implements Runnable {
+    private ChatForm chatForm;
     private Client client;
 
     private SourceDataLine line;
@@ -19,8 +20,10 @@ public class ClientVoiceReceiveThread implements Runnable {
 
     private LinkedList<String> voiceQueue;
 
-    public ClientVoiceReceiveThread(Client client) {
+    public ClientVoiceReceiveThread(ChatForm chatForm, Client client) {
+        this.chatForm = chatForm;
         this.client = client;
+
         voiceQueue = new LinkedList<>();
     }
 
@@ -63,6 +66,8 @@ public class ClientVoiceReceiveThread implements Runnable {
                     position[i] = Float.parseFloat(rawData[i + 1]);
                 }
                 voice = decoder.decode(rawData[4]);
+
+                chatForm.addLog("SERVER", "->", String.format("[ %d Bytes ]", voice.length));
 
                 // TODO: here comes the codes to control the volume of the voice
 

@@ -43,7 +43,7 @@ public class Client {
 
         clientReceiveThread = new ClientReceiveThread(this);
         clientReceiveThread.start();
-        clientVoiceReceiveThread = new ClientVoiceReceiveThread(this);
+        clientVoiceReceiveThread = new ClientVoiceReceiveThread(chatForm, this);
         clientVoiceReceiveThread.start();
         clientVoiceSendThread = new ClientVoiceSendThread(this);
         clientVoiceSendThread.start();
