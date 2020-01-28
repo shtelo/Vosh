@@ -5,7 +5,7 @@ public class Constants {
 
     public static int PORT = 21348;
 
-    public static final int BUFFER_SIZE = 32768;
+    public static final int BUFFER_SIZE = 8192;
 
     public static String VOICE_PREFIX = "~$V~";
 }
