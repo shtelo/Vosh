@@ -170,11 +170,19 @@ public class ServerSideThread implements Runnable {
                         send("QNME " + name);
                     } else if (args[0].equalsIgnoreCase("GPOS")) {
                         // GPOS zer0ken -> position of zer0ken: GPOS zer0ken 1 2 3
-                        double[] position = moveListener.getPosition(args[1]);
-                        send(String.format("GPOS %s %f %f %f", args[1], position[0], position[1], position[2]));
+                        try {
+                            double[] position = moveListener.getPosition(args[1]);
+                            send(String.format("GPOS %s %f %f %f", args[1], position[0], position[1], position[2]));
+                        } catch (NullPointerException e) {
+                            send("ERRR");
+                        }
                     } else if (args[0].equalsIgnoreCase("GYAW")) {
                         // GYAW Sch_0q0 -> y_rotation of Sch_0q0: GYAW Sch_0q0 0
-                        send(String.format("GYAW %s %f", args[1], moveListener.getYaw(args[1])));
+                        try {
+                            send(String.format("GYAW %s %f", args[1], moveListener.getYaw(args[1])));
+                        } catch (NullPointerException e) {
+                            send("ERRR");
+                        }
                     }
                 }
             }

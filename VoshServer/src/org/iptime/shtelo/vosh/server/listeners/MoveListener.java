@@ -19,12 +19,10 @@ public class MoveListener implements Listener {
     }
 
     public double getYaw(String player) {
-        assert data.containsKey(player);
         return data.get(player)[3];
     }
 
     public double[] getPosition(String player) {
-        assert data.containsKey(player);
         return data.get(player);
     }
 
@@ -38,6 +36,6 @@ public class MoveListener implements Listener {
         double z = player.getLocation().getZ();
         double yRot = player.getLocation().getYaw();
 
-        data.put(player.getDisplayName(), new double[]{x, y, z, yRot});
+        data.put(player.getName(), new double[]{x, y, z, yRot});
     }
 }
