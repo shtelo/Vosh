@@ -12,11 +12,11 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        server = new Server(this);
-
         new VoshCommand(server, this);
 
-        new MoveListener(this);
+        MoveListener moveListener = new MoveListener(this);
+
+        server = new Server(moveListener, this);
 
         try {
             server.start();

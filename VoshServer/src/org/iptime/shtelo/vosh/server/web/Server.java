@@ -2,6 +2,7 @@ package org.iptime.shtelo.vosh.server.web;
 
 import org.bukkit.Bukkit;
 import org.iptime.shtelo.vosh.server.Main;
+import org.iptime.shtelo.vosh.server.listeners.MoveListener;
 import org.iptime.shtelo.vosh.server.utils.Constants;
 import org.iptime.shtelo.vosh.server.utils.Utils;
 
@@ -12,6 +13,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class Server implements Runnable {
+    private MoveListener moveListener;
     private Main plugin;
 
     private Thread thread;
@@ -47,13 +49,13 @@ public class Server implements Runnable {
             if (serverSideThread != from) {
                 try {
                     serverSideThread.sendBytes(bytes);
-                } catch (IOException ignored) {
-                }
+                } catch (IOException ignored) {}
             }
         }
     }
 
-    public Server(Main plugin) {
+    public Server(MoveListener moveListener, Main plugin) {
+        this.moveListener = moveListener;
         this.plugin = plugin;
 
         threads = new ArrayList<>();
@@ -81,7 +83,7 @@ public class Server implements Runnable {
             Socket socket;
             try {
                 socket = serverSocket.accept();
-                ServerSideThread serverSideThread = new ServerSideThread(socket, this, plugin);
+                ServerSideThread serverSideThread = new ServerSideThread(moveListener, socket, this, plugin);
                 serverSideThread.start();
             } catch (SocketException e) {
                 break;

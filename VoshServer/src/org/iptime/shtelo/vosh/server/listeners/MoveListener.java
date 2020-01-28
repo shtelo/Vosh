@@ -7,9 +7,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.iptime.shtelo.vosh.server.Main;
 
+import java.util.HashMap;
+
 public class MoveListener implements Listener {
+    private HashMap<String, double[]> data;
+
     public MoveListener(Main plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+
+        data = new HashMap<>();  // "Sch_0q0" -> [x, y, z, yr]
+    }
+
+    public double getYaw(String player) {
+        assert data.containsKey(player);
+        return data.get(player)[3];
+    }
+
+    public double[] getPosition(String player) {
+        assert data.containsKey(player);
+        return data.get(player);
     }
 
     @SuppressWarnings("unused")
@@ -20,9 +36,8 @@ public class MoveListener implements Listener {
         double x = player.getLocation().getX();
         double y = player.getLocation().getY();
         double z = player.getLocation().getZ();
-        double xRot = player.getLocation().getPitch();
         double yRot = player.getLocation().getYaw();
 
-        // todo send data to all connected clients.
+        data.put(player.getDisplayName(), new double[]{x, y, z, yRot});
     }
 }
