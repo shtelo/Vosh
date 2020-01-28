@@ -3,8 +3,10 @@ package org.iptime.shtelo.vosh.client.web;
 import org.iptime.shtelo.vosh.client.utils.Constants;
 
 import javax.sound.sampled.*;
+import java.beans.Encoder;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class ClientVoiceSendThread implements Runnable {
     private Client client;
@@ -49,13 +51,14 @@ public class ClientVoiceSendThread implements Runnable {
     @Override
     public void run() {
         byte[] data;
+        Base64.Encoder encoder = Base64.getEncoder();
         while (client.isConnected()) {
             try {
                 data = audioInputStream.readNBytes(Constants.BUFFER_SIZE);
 
                 // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
 
-                client.send(Constants.VOICE_PREFIX + " 0 0 0 " + new String(data, StandardCharsets.UTF_8));
+                client.send(Constants.VOICE_PREFIX + " 0 0 0 " + encoder.encodeToString(data));
             } catch (IOException ignored) {
             }
         }

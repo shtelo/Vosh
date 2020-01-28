@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.LinkedList;
 
 public class ClientVoiceReceiveThread implements Runnable {
@@ -53,6 +54,7 @@ public class ClientVoiceReceiveThread implements Runnable {
         String[] rawData;
         byte[] voice;
         float[] position = new float[3];
+        Base64.Decoder decoder = Base64.getDecoder();
 
         while (client.isConnected()) {
             try {
@@ -60,7 +62,7 @@ public class ClientVoiceReceiveThread implements Runnable {
                 for (int i = 0; i < 3; i++) {
                     position[i] = Float.parseFloat(rawData[i + 1]);
                 }
-                voice = rawData[4].getBytes(StandardCharsets.UTF_8);
+                voice = decoder.decode(rawData[4]);
 
                 // TODO: here comes the codes to control the volume of the voice
 
