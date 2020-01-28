@@ -2,6 +2,7 @@ package org.iptime.shtelo.vosh.server.web;
 
 import org.bukkit.Bukkit;
 import org.iptime.shtelo.vosh.server.Main;
+import org.iptime.shtelo.vosh.server.listeners.MoveListener;
 import org.iptime.shtelo.vosh.server.utils.Constants;
 import org.iptime.shtelo.vosh.server.utils.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class ServerSideThread implements Runnable {
+    private MoveListener moveListener;
     private Socket socket;
     private Server server;
     private Main plugin;
@@ -28,7 +30,8 @@ public class ServerSideThread implements Runnable {
 
     private String name;
 
-    public ServerSideThread(Socket socket, Server server, Main plugin) {
+    public ServerSideThread(MoveListener moveListener, Socket socket, Server server, Main plugin) {
+        this.moveListener = moveListener;
         this.socket = socket;
         this.server = server;
         this.plugin = plugin;
@@ -95,8 +98,7 @@ public class ServerSideThread implements Runnable {
     private byte[] receiveBytes() {
         try {
             return socket.getInputStream().readNBytes(Constants.BUFFER_SIZE);
-        } catch (IOException ignored) {
-        }
+        } catch (IOException ignored) {}
         return null;
     }
 
@@ -167,6 +169,13 @@ public class ServerSideThread implements Runnable {
                         name = args[1];
                     } else if (args[0].equalsIgnoreCase("QNME")) {
                         send("QNME " + name);
+                    } else if (args[0].equalsIgnoreCase("GPOS")) {
+                        // GPOS zer0ken -> position of zer0ken: GPOS zer0ken 1 2 3
+                        double[] position = moveListener.getPosition(args[1]);
+                        send(String.format("GPOS %s %f %f %f", args[1], position[0], position[1], position[2]));
+                    } else if (args[0].equalsIgnoreCase("GYAW")) {
+                        // GYAW Sch_0q0 -> y_rotation of Sch_0q0: GYAW Sch_0q0 0
+                        send(String.format("GYAW %s %f", args[1], moveListener.getYaw(args[1])));
                     }
                 }
             }
