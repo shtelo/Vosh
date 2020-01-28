@@ -7,7 +7,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import java.util.LinkedList;
-import java.util.Objects;
 
 public class ClientVoiceReceiveThread implements Runnable {
     private Client client;
@@ -16,18 +15,15 @@ public class ClientVoiceReceiveThread implements Runnable {
 
     private Thread thread;
 
-    private LinkedList<byte[]> voiceQueue;
-    private LinkedList<String> positionQueue;
+    private LinkedList<String> voiceQueue;
 
     public ClientVoiceReceiveThread(Client client) {
         this.client = client;
         voiceQueue = new LinkedList<>();
-        positionQueue = new LinkedList<>();
     }
 
-    public void offer(String position, byte[] voice) {
-        positionQueue.offer(position);
-        voiceQueue.offer(voice);
+    public void offer(String data) {
+        voiceQueue.offer(data);
     }
 
     public void start() throws LineUnavailableException {
@@ -53,24 +49,23 @@ public class ClientVoiceReceiveThread implements Runnable {
 
     @Override
     public void run() {
-        String[] rawPosition;
+        String[] rawData;
         byte[] voice;
-        @SuppressWarnings("MismatchedReadAndWriteOfArray")  // at some point, we will meet need to remove this line.
         float[] position = new float[3];
 
         while (client.isConnected()) {
             try {
-                rawPosition = Objects.requireNonNull(positionQueue.poll()).trim().split(" ");
-                voice = voiceQueue.poll();
+                rawData = voiceQueue.poll().trim().split(" ", 4);
                 for (int i = 0; i < 3; i++) {
-                    position[i] = Float.parseFloat(rawPosition[i]);
+                    position[i] = Float.parseFloat(rawData[i + 1]);
                 }
+                voice = rawData[4].getBytes();
 
                 // TODO: here comes the codes to control the volume of the voice
 
-                assert voice != null;
                 line.write(voice, 0, voice.length);
-            } catch (NullPointerException ignored) {}
+            } catch (NullPointerException ignored) {
+            }
         }
         stop();
     }

@@ -54,8 +54,7 @@ public class ClientVoiceSendThread implements Runnable {
 
                 // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
 
-                client.send(Constants.VOICE_PREFIX);
-                client.sendBytes(data);
+                client.send(Constants.VOICE_PREFIX + " 0 0 0 " + new String(data));
             } catch (IOException ignored) {
             }
         }

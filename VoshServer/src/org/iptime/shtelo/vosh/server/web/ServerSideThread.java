@@ -95,7 +95,8 @@ public class ServerSideThread implements Runnable {
     private byte[] receiveBytes() {
         try {
             return socket.getInputStream().readNBytes(Constants.BUFFER_SIZE);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         return null;
     }
 
@@ -150,9 +151,7 @@ public class ServerSideThread implements Runnable {
 
                 if (args.length >= 1) {
                     if (args[0].trim().equals(Constants.VOICE_PREFIX)) {
-                        byte[] voice = receiveBytes();
                         server.passStringToOthers(data, this);
-                        server.passBytesToOthers(voice, this);
                         continue;
                     }
 
