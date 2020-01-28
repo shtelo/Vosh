@@ -12,19 +12,27 @@ public class ClientVoiceSendThread implements Runnable {
     private TargetDataLine targetDataLine;
     private AudioInputStream audioInputStream;
 
+    private boolean microphoneAvailable;
+
     private Thread thread;
 
     public ClientVoiceSendThread(Client client) {
         this.client = client;
+
+        microphoneAvailable = true;
     }
 
     public void start() throws LineUnavailableException {
-        targetDataLine = (TargetDataLine) AudioSystem.getLine(new DataLine.Info(
-                TargetDataLine.class,
-                new AudioFormat(Constants.SAMPLE_RATE, 16, 1, true, true)));
-        targetDataLine.open();
-        targetDataLine.start();
-        audioInputStream = new AudioInputStream(targetDataLine);
+        try {
+            targetDataLine = (TargetDataLine) AudioSystem.getLine(new DataLine.Info(
+                    TargetDataLine.class,
+                    new AudioFormat(Constants.SAMPLE_RATE, 16, 1, true, true)));
+            targetDataLine.open();
+            targetDataLine.start();
+            audioInputStream = new AudioInputStream(targetDataLine);
+        } catch (IllegalArgumentException e) {
+            microphoneAvailable = false;
+        }
 
         thread = new Thread(this);
         thread.setDaemon(true);
@@ -53,14 +61,15 @@ public class ClientVoiceSendThread implements Runnable {
         Base64.Encoder encoder = Base64.getEncoder();
         while (client.isConnected()) {
             try {
-                data = audioInputStream.readNBytes(Constants.BUFFER_SIZE);
+                if (microphoneAvailable) {
+                    data = audioInputStream.readNBytes(Constants.BUFFER_SIZE);
 
-                // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
-                rawData = Constants.VOICE_PREFIX + " zer0ken " + encoder.encodeToString(data);
-                client.send(rawData);
+                    // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
+                    rawData = Constants.VOICE_PREFIX + " zer0ken " + encoder.encodeToString(data);
+                    client.send(rawData);
+                }
 
-            } catch (IOException ignored) {
-            }
+            } catch (IOException ignored) {}
         }
         stop();
     }
