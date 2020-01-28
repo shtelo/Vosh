@@ -100,6 +100,7 @@ public class ChatForm extends JFrame {
 
     public void addLog(String with, String direction, String message) {
         textArea.append(with + " " + direction + " " + message + "\n");
+        textArea.setCaretPosition(textArea.getDocument().getLength());
     }
 
     private void createUIComponents() {
