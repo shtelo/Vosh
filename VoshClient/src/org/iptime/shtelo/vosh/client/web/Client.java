@@ -7,6 +7,7 @@ import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Client {
@@ -22,9 +23,16 @@ public class Client {
     private ClientVoiceReceiveThread clientVoiceReceiveThread;
     private ClientVoiceSendThread clientVoiceSendThread;
 
+    private HashMap<String, double[]> positions;
+    private double yaw;
+
     private boolean connected;
 
     private String name;
+
+    public HashMap<String, double[]> getPositions() {
+        return positions;
+    }
 
     public Client(String name, Socket socket, String host, int port, ChatForm chatForm)
             throws IOException, LineUnavailableException {
@@ -41,9 +49,12 @@ public class Client {
 
         send("NAME " + name);
 
+        positions = new HashMap<>();
+        yaw = 0;
+
         clientReceiveThread = new ClientReceiveThread(this);
         clientReceiveThread.start();
-        clientVoiceReceiveThread = new ClientVoiceReceiveThread(chatForm, this);
+        clientVoiceReceiveThread = new ClientVoiceReceiveThread(this);
         clientVoiceReceiveThread.start();
         clientVoiceSendThread = new ClientVoiceSendThread(this);
         clientVoiceSendThread.start();
@@ -61,6 +72,7 @@ public class Client {
         }
     }
 
+    @SuppressWarnings("unused")
     public void sendBytes(byte[] bytes) throws IOException {
         socket.getOutputStream().write(bytes);
     }
@@ -76,6 +88,7 @@ public class Client {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public byte[] receiveBytes(int len) {
         try {
             return socket.getInputStream().readNBytes(len);
@@ -103,5 +116,13 @@ public class Client {
 
     public ClientVoiceReceiveThread getClientVoiceReceiveThread() {
         return clientVoiceReceiveThread;
+    }
+
+    public void setYaw(double yaw) {
+        this.yaw = yaw;
+    }
+
+    public double getYaw() {
+        return yaw;
     }
 }

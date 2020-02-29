@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="VoshClient:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/VoshClient_jar</output-path>
+    <root id="archive" name="VoshClient.jar">
+      <element id="module-output" name="VoshClient" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/adedayo/intellij/sdk/forms_rt/142.1/forms_rt-142.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/adedayo/intellij/sdk/javac2/142.1/javac2-142.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

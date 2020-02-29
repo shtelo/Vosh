@@ -4,6 +4,7 @@ import org.iptime.shtelo.vosh.client.utils.Constants;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class ClientVoiceSendThread implements Runnable {
@@ -65,7 +66,7 @@ public class ClientVoiceSendThread implements Runnable {
                     data = audioInputStream.readNBytes(Constants.BUFFER_SIZE);
 
                     // TODO: here comes the condition to decide to send voice to server or not (by volume maybe)
-                    rawData = Constants.VOICE_PREFIX + " zer0ken " + encoder.encodeToString(data);
+                    rawData = Constants.VOICE_PREFIX + " " + client.getName() + " " + encoder.encodeToString(data);
                     client.send(rawData);
                 }
 

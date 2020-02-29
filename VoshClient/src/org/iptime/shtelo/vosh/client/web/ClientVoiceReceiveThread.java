@@ -1,17 +1,17 @@
 package org.iptime.shtelo.vosh.client.web;
 
-import org.iptime.shtelo.vosh.client.forms.ChatForm;
 import org.iptime.shtelo.vosh.client.utils.Constants;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class ClientVoiceReceiveThread implements Runnable {
-    private ChatForm chatForm;
     private Client client;
 
     private SourceDataLine line;
@@ -20,8 +20,7 @@ public class ClientVoiceReceiveThread implements Runnable {
 
     private LinkedBlockingDeque<String> voiceQueue;
 
-    public ClientVoiceReceiveThread(ChatForm chatForm, Client client) {
-        this.chatForm = chatForm;
+    public ClientVoiceReceiveThread(Client client) {
         this.client = client;
 
         voiceQueue = new LinkedBlockingDeque<>();
@@ -57,15 +56,19 @@ public class ClientVoiceReceiveThread implements Runnable {
     public void run() {
         String[] rawData;
         byte[] voice;
-        float[] position = new float[3];
         Base64.Decoder decoder = Base64.getDecoder();
 
         while (client.isConnected()) {
             try {
-                rawData = voiceQueue.poll().trim().split(" ", 3);
+                rawData = Objects.requireNonNull(voiceQueue.poll()).trim().split(" ", 3);
                 voice = decoder.decode(rawData[2]);
 
-                // TODO: here comes the codes to control the volume of the voice
+                String playerName = rawData[1];
+                double[] playerPosition = client.getPositions().get(playerName);
+                double[] myPosition = client.getPositions().get(client.getName());
+                double theta = client.getYaw() * (Math.PI / 180);
+
+                System.out.println(theta + " " + Arrays.toString(myPosition) + " " + Arrays.toString(playerPosition));
 
                 line.write(voice, 0, voice.length);
             } catch (NullPointerException ignored) {

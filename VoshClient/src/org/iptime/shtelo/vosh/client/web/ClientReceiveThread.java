@@ -2,6 +2,7 @@ package org.iptime.shtelo.vosh.client.web;
 
 import org.iptime.shtelo.vosh.client.utils.Constants;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class ClientReceiveThread implements Runnable {
@@ -46,9 +47,16 @@ public class ClientReceiveThread implements Runnable {
                     if (args[0].equalsIgnoreCase("PING")) {
                         client.send("PONG");
 //                    } else if (args[0].equalsIgnoreCase("QUIT")) {
-//
+
 //                    } else if (args[0].equalsIgnoreCase("NAME")) {
-//
+
+                    } else if (args[0].equalsIgnoreCase("GPOS")) {
+                        client.getPositions().put(args[1], new double[]{
+                                Double.parseDouble(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4])});
+                    } else if (args[0].equalsIgnoreCase("GYAW")) {
+                        if (args[1].equals(client.getName())) {
+                            client.setYaw(Double.parseDouble(args[2]));
+                        }
                     } else if (args[0].equalsIgnoreCase("QNME")) {
                         client.setName(args[1]);
                     }
